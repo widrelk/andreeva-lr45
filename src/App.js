@@ -105,9 +105,11 @@ const allTableware = [
 
 function App() {
   const [data, setData] = useState([{}]);
-  const [genericData, setGenericData] = useState({});
+  const [genericData, setGenericData] = useState({subDiv: ''});
   const [comissionData, setComissionData] = useState({});
   const [comissionModalOpened, setComissionModalOpened] = useState(false);
+
+  const [detailsData, setDetailsData] = useState('')
   const [detailsModalTarget, setDetailsModalTarget] = useState(-1);
 
   const updateTableValue = (index, id, value) => {
@@ -137,7 +139,7 @@ function App() {
             <Select
               size='small'
               style={{ width: '100%' }}
-              value={row.original.tableware?.id || '0'}
+              value={row.original.tableware?.id || ''}
               onChange={(event) => {
                 const dataCopy = JSON.parse(JSON.stringify(data));
                 dataCopy[row.index].tableware = allTableware.find(elem => elem.id === event.target.value);
@@ -218,9 +220,9 @@ function App() {
       ],
     },
     {
-      Header: 'Обстоятельства боя, лома, утраты, пропажи. Виновные лица (Должность, ФИО). Примечания',
+      Header: 'Обстоятельства боя, лома, утраты, пропажи. Виновные лица (Должность, ФИО). Примечание',
       accessor: 'info',
-      Cell: ({ row }) => <IconButton><EditIcon /></IconButton>
+      Cell: ({ row }) => <IconButton onClick={() => setDetailsModalTarget(row.index)}><EditIcon /></IconButton>
     },
   ], [data]);
 
@@ -241,8 +243,8 @@ function App() {
                 <Select
                   size='small'
                   style={{ width: '15rem' }}
-                  value={genericData.subdiv}
-                  onChange={event => updateValue('subdiv', event.target.value)}
+                  value={genericData.subDiv}
+                  onChange={event => updateValue('subDiv', event.target.value)}
                 >
                   <MenuItem value={0}>Подразделение 1</MenuItem>
                   <MenuItem value={1}>Подразделение 2</MenuItem>
@@ -479,8 +481,27 @@ function App() {
         open={detailsModalTarget !== -1}
         onClose={() => setDetailsModalTarget(-1)}
       >
-        <Paper style={{ padding: '1.5rem', width: '60%' }}>
-          
+        <Paper style={{ padding: '1.5rem', width: '60%', display: 'flex', flexDirection: 'column'}}>
+          <p>Обстоятельства боя, лома, утраты, пропажи. Виновные лица (Должность, ФИО). Примечание</p>
+          <TextField
+            placeholder='Обстоятельства'
+            size='small'
+            sx={{width: '100%', marginBottom: '1em'}}
+            value={detailsData}
+            onChange={(event) => setDetailsData(event.target.value)}
+            multiline
+          />
+          <Button
+            variant='contained'
+            color='success'
+            onClick={() => {
+              updateTableValue(detailsModalTarget, 'details', detailsData);
+              setDetailsData('');
+              setDetailsModalTarget(-1);
+            }}
+          >
+            Сохранить
+          </Button>
         </Paper>
       </Modal>
 
