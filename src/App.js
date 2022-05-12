@@ -222,7 +222,10 @@ function App() {
     {
       Header: 'Обстоятельства боя, лома, утраты, пропажи. Виновные лица (Должность, ФИО). Примечание',
       accessor: 'info',
-      Cell: ({ row }) => <IconButton onClick={() => setDetailsModalTarget(row.index)}><EditIcon /></IconButton>
+      Cell: ({ row }) => <IconButton onClick={() => {
+        setDetailsModalTarget(row.index);
+        setDetailsData(data[row.index].details);
+      }}><EditIcon /></IconButton>
     },
   ], [data]);
 
@@ -487,6 +490,7 @@ function App() {
             placeholder='Обстоятельства'
             size='small'
             sx={{width: '100%', marginBottom: '1em'}}
+
             value={detailsData}
             onChange={(event) => setDetailsData(event.target.value)}
             multiline
